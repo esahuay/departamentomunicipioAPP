@@ -1,0 +1,69 @@
+﻿@model departamentomunicipio.Models.Tablapai
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Tablapai</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Departamento" class="control-label"></label>
+                <select asp-for="IdDepartamento" class="form-control" asp-items="ViewBag.Departamentos"></select>
+                <span asp-validation-for="IdDepartamento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Municipio" class="control-label"></label>
+                <select asp-for="IdMunicipio" class="form-control" asp-items="ViewBag.Municipios"></select>
+                <span asp-validation-for="IdMunicipio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            $('#IdDepartamento').change(function () {
+                var departamentoId = $(this).val();
+                var municipioSelect = $('#IdMunicipio');
+                $.ajax({
+                    type: "GET",
+                    url: `/Tablapais/getddlMunicipios?id=${departamentoId}`,
+                    success: function (data) {
+                        console.log(data);
+                        municipioSelect.empty();
+                        municipioSelect.append('<option value="">Select Municipio</option>');
+                        $.each(data, function (index, municipio) {
+                            municipioSelect.append('<option value="' + municipio.id + '">' + municipio.name + '</option>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
